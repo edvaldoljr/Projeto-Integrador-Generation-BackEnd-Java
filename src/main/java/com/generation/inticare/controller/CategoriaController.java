@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Optional;
 
+//@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/categoria")
 public class CategoriaController {
@@ -33,9 +34,17 @@ public class CategoriaController {
 
     @PostMapping
     public ResponseEntity<CategoriaModel> post(@Valid @RequestBody CategoriaModel categoriaModel) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(categoriaRepository.save(categoriaModel));
+        try {
+            System.out.println("Recebendo requisição POST com dados: " + categoriaModel);
+            CategoriaModel savedCategoria = categoriaRepository.save(categoriaModel);
+            System.out.println("Categoria salva com sucesso: " + savedCategoria);
+            return ResponseEntity.status(HttpStatus.CREATED).body(savedCategoria);
+        } catch (Exception e) {
+            System.err.println("Erro ao salvar categoria: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
+
 
     @PutMapping
     public ResponseEntity<CategoriaModel> put(@Valid @RequestBody CategoriaModel categoriaModel) {
