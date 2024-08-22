@@ -71,4 +71,16 @@ public class ProdutoController {
         return ResponseEntity.ok(produtoRepository
                 .findAllByNomeProdutoContainingIgnoreCase(nome));
     }
+    
+    @GetMapping("/categoria/{id}")
+    public ResponseEntity<List<ProdutoModel>> getByCategoria(@PathVariable Long id) {
+        // Verifica se a categoria existe
+        if (!categoriaRepository.existsById(id)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        // Busca produtos pela categoria
+        List<ProdutoModel> produtos = produtoRepository.findAllByCategoriaModelId(id);
+        return ResponseEntity.ok(produtos);
+    }
 }
