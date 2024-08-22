@@ -13,6 +13,9 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Optional;
 
+
+
+//@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/produto")
 public class ProdutoController {
@@ -67,5 +70,17 @@ public class ProdutoController {
     public ResponseEntity <List<ProdutoModel>> getByNome(@PathVariable String nome) {
         return ResponseEntity.ok(produtoRepository
                 .findAllByNomeProdutoContainingIgnoreCase(nome));
+    }
+    
+    @GetMapping("/categoria/{id}")
+    public ResponseEntity<List<ProdutoModel>> getByCategoria(@PathVariable Long id) {
+        // Verifica se a categoria existe
+        if (!categoriaRepository.existsById(id)) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        // Busca produtos pela categoria
+        List<ProdutoModel> produtos = produtoRepository.findAllByCategoriaModelId(id);
+        return ResponseEntity.ok(produtos);
     }
 }
